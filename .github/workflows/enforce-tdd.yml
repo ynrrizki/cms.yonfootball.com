@@ -1,0 +1,30 @@
+name: Enforce Agent TDD
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v4
+        with:
+          php-version: '8.3'
+          extensions: mbstring, bcmath, sqlite, pdo_sqlite
+      - name: Get Composer Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer Dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --no-interaction
+      - name: Prepare Environment
+        run: cp .env.example .env || true
+      - name: Generate APP_KEY
+        run: php artisan key:generate --ansi
+      - name: Run Tests
+        run: php artisan test --compact

@@ -1,0 +1,252 @@
+// ERD RELEVANCE POLICY
+// - ACTIVE_CORE: source of truth for current implementation and default code generation.
+// - PLANNED_NEXT: valid target design for next schema iteration, not default for code generation.
+// - DEPRECATED: do not use for new implementation.
+//
+// Agent rule:
+// 1) Use ACTIVE_CORE by default.
+// 2) Use PLANNED_NEXT only when task explicitly requests schema upgrade/phase-next.
+// 3) Never re-introduce DEPRECATED items.
+
+Enum user.roles {
+  "SUPER_ADMIN"
+  "OWNER"
+  "ADMIN"
+}
+
+table users {
+  id bigint
+  name varchar
+  email varchar [unique]
+  role user.roles [null]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+table banners {
+  id bigint
+  name varchar
+  cover_url varchar
+  link_url varchar
+  sort_order int [default: 0]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+table product_categories {
+  id bigint
+  name varchar [note: "Topup, Joki, Pulsa"]
+  sort_order int [default: 0]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+table products {
+  id bigint
+  name varchar [note: "Mobile Legends"]
+  slug varchar [unique]
+  code varchar [unique]
+  leading_url varchar [null]
+  background_url varchar [null]
+  category_id bigint [ref: > product_categories.id]
+  inputs jsonb [null]
+  is_active boolean [default: true]
+  is_popular boolean [default: false, note: "Specializing Popular from Admin"]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+table product_variants {
+  id bigint
+  product_id bigint [ref: > products.id]
+  name varchar
+  leading_url varchar [null]
+  price_original int [note: "Supplier Pricing"]
+  price int [note: "Markup Pricing"]
+  price_discount int [note: "Special Pricing"]
+  is_active boolean [default: true]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+enum order.statuses {
+  "PENDING"
+  "PROCESSING"
+  "SUCCESS"
+}
+
+table orders {
+  id bigint
+  ticket_number varchar
+  product_variant_id bigint
+  status order.statuses
+  user_inputs jsonb
+  processed_by bigint [ref: > users.id]
+  completed_at timestamp
+  notes text [null, note: "Internal Notes"]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+table vouchers {
+  id bigint
+  name varchar
+  code varchar [unique]
+  price_flat int
+  price_percentage decimal
+  effective_date dateTime [null]
+  ended_date dateTime [null]
+  usage_limit int [null]
+  usage_count int [default: 0]
+  is_active boolean [default: true]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+
+enum transaction.statuses {
+  "PENDING"
+  "PAID"
+  "CANCELLED"
+  "REFUNDED"
+}
+
+table transactions {
+  id bigint
+  invoice_number varchar [unique]
+  order_id bigint
+  voucher_id bigint
+  customer_name varchar
+  customer_phone varchar
+  customer_email varchar
+  status transaction.statuses
+  product_name varchar
+  product_snapshot jsonb
+  payment_url varchar [null]
+  payment_method varchar
+  payment_snapshot jsonb
+  paid_at dateTime
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+Enum audit.types {
+  "INSERT"
+  "UPDATE"
+  "DELETE"
+}
+
+table audits {
+  id bigint
+  user_agent varchar
+  resource_type string [note: "Products, Product Variants, Orders, Vouchers, Transactions"]
+  resource_id bigint
+  resource_snapshot jsonb
+  audit_types audit.types
+  users_id bigint [null]
+}
+
+TableGroup ACTIVE_CORE {
+  users
+  banners
+  product_categories
+  products
+  product_variants
+  orders
+  vouchers
+  transactions
+  audits
+}
+
+// --- PLANNED_NEXT: readiness for robust order-payment orchestration ---
+
+Enum payment.event_sources {
+  "WEBHOOK"
+  "SYSTEM"
+  "ADMIN"
+}
+
+Enum notification.channels {
+  "WHATSAPP"
+}
+
+Enum notification.statuses {
+  "PENDING"
+  "RETRYING"
+  "SENT"
+  "FAILED"
+  "DEAD_LETTER"
+}
+
+table transaction_events {
+  id bigint
+  transaction_id bigint [ref: > transactions.id]
+  provider_event_id varchar [null, unique]
+  source payment.event_sources
+  status_before transaction.statuses [null]
+  status_after transaction.statuses
+  payload jsonb [null]
+  processed_at timestamp [null]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+table order_state_histories {
+  id bigint
+  order_id bigint [ref: > orders.id]
+  status_before order.statuses [null]
+  status_after order.statuses
+  actor_user_id bigint [ref: > users.id, null]
+  reason text [null]
+  metadata jsonb [null]
+
+  // -
+  created_at timestamp
+}
+
+table notification_deliveries {
+  id bigint
+  order_id bigint [ref: > orders.id, null]
+  transaction_id bigint [ref: > transactions.id, null]
+  channel notification.channels
+  template_code varchar
+  recipient varchar
+  payload jsonb [null]
+  status notification.statuses
+  attempts int [default: 0]
+  last_error text [null]
+  next_retry_at timestamp [null]
+  sent_at timestamp [null]
+
+  // -
+  created_at timestamp
+  updated_at timestamp [null]
+}
+
+TableGroup PLANNED_NEXT {
+  transaction_events
+  order_state_histories
+  notification_deliveries
+}
+
+// DEPRECATED REGISTRY
+// - orders.queue_number (deprecated: treat queue position as computed runtime metric)
+// - transactions.status = SUCCESS (deprecated: use PAID to represent successful payment capture)

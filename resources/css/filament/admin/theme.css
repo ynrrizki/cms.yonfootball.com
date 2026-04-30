@@ -1,0 +1,106 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* BI Dashboard - Custom Theme Styles */
+
+@layer components {
+    /* Metric Cards */
+    .bi-metric-card-amber {
+        @apply relative overflow-hidden rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-orange-500/5 p-6 backdrop-blur-md transition-all hover:border-amber-500/40;
+    }
+
+    .bi-metric-card-emerald {
+        @apply relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-teal-500/5 p-6 backdrop-blur-md transition-all hover:border-emerald-500/40;
+    }
+
+    .bi-metric-card-blue {
+        @apply relative overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 p-6 backdrop-blur-md transition-all hover:border-blue-500/40;
+    }
+
+    .bi-metric-card-purple {
+        @apply relative overflow-hidden rounded-3xl border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-pink-500/5 p-6 backdrop-blur-md transition-all hover:border-purple-500/40;
+    }
+
+    /* Alert Styles */
+    .bi-alert-warning {
+        @apply relative overflow-hidden rounded-3xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-red-500/5 p-6 backdrop-blur-md;
+    }
+
+    .bi-alert-pending {
+        @apply relative overflow-hidden rounded-3xl border border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 to-amber-500/5 p-6 backdrop-blur-md;
+    }
+
+    .bi-alert-success {
+        @apply relative overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5 p-6 backdrop-blur-md;
+    }
+
+    /* Icons */
+    .bi-icon-amber {
+        @apply rounded-full bg-amber-500/20 p-3 text-amber-400;
+    }
+
+    .bi-icon-emerald {
+        @apply rounded-full bg-emerald-500/20 p-3 text-emerald-400;
+    }
+
+    .bi-icon-blue {
+        @apply rounded-full bg-blue-500/20 p-3 text-blue-400;
+    }
+
+    .bi-icon-purple {
+        @apply rounded-full bg-purple-500/20 p-3 text-purple-400;
+    }
+
+    .bi-icon-orange {
+        @apply rounded-full bg-orange-500/20 p-3 text-orange-400;
+    }
+
+    .bi-icon-yellow {
+        @apply rounded-full bg-yellow-500/20 p-3 text-yellow-400;
+    }
+
+    /* Labels */
+    .bi-label-amber {
+        @apply text-xs font-bold uppercase tracking-widest text-amber-400/70;
+    }
+
+    .bi-label-emerald {
+        @apply text-xs font-bold uppercase tracking-widest text-emerald-400/70;
+    }
+
+    .bi-label-blue {
+        @apply text-xs font-bold uppercase tracking-widest text-blue-400/70;
+    }
+
+    .bi-label-purple {
+        @apply text-xs font-bold uppercase tracking-widest text-purple-400/70;
+    }
+
+    .bi-label-orange {
+        @apply text-xs font-bold uppercase tracking-widest text-orange-400/70;
+    }
+
+    .bi-label-yellow {
+        @apply text-xs font-bold uppercase tracking-widest text-yellow-400/70;
+    }
+
+    /* Text */
+    .bi-metric-value {
+        @apply mt-3 text-3xl font-bold text-white;
+    }
+
+    .bi-metric-description {
+        @apply text-sm text-slate-400;
+    }
+
+    /* Links */
+    .bi-button-link-orange {
+        @apply inline-block text-orange-400 hover:text-orange-300 text-sm font-semibold transition-colors;
+    }
+
+    .bi-button-link-yellow {
+        @apply inline-block text-yellow-400 hover:text-yellow-300 text-sm font-semibold transition-colors;
+    }
+}
