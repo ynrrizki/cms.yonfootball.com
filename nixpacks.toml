@@ -1,6 +1,9 @@
-# Nixpacks — set service root ke folder `cms` (Railway / Coolify / dll.)
-# Build & deps: biarkan deteksi otomatis (Composer + npm/vite).
-# Start: migrate → seed → serve (lihat bin/start.sh).
+# Nixpacks — set service root ke folder `cms` (Dokploy / Railway / Coolify / dll.)
+# Wajib Node 20+ untuk Vite 8; default Nixpacks = Node 18 → npm run build gagal.
+# https://nixpacks.com/docs/providers/node
+
+[variables]
+NIXPACKS_NODE_VERSION = "22"
 
 [start]
 cmd = "chmod +x bin/start.sh && exec ./bin/start.sh"
