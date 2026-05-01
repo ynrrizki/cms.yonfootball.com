@@ -1,0 +1,6 @@
+# Nixpacks — set service root ke folder `cms` (Railway / Coolify / dll.)
+# Build & deps: biarkan deteksi otomatis (Composer + npm/vite).
+# Start: migrate → seed → serve (lihat bin/start.sh).
+
+[start]
+cmd = "chmod +x bin/start.sh && exec ./bin/start.sh"

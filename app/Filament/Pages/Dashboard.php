@@ -3,7 +3,6 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\LatestTransactionsWidget;
-use App\Filament\Widgets\OrderBacklogWidget;
 use App\Filament\Widgets\PendingOrdersWidget;
 use App\Filament\Widgets\RevenueLineChart;
 use App\Filament\Widgets\RevenueStatsOverview;
@@ -16,7 +15,6 @@ class Dashboard extends BaseDashboard
 		return [
 			RevenueStatsOverview::class,
 			RevenueLineChart::class,
-			OrderBacklogWidget::class,
 			PendingOrdersWidget::class,
 			LatestTransactionsWidget::class,
 		];
@@ -24,6 +22,9 @@ class Dashboard extends BaseDashboard
 
 	public function getColumns(): int | array
 	{
-		return 12;
+		return [
+            'md' => 2,
+            'xl' => 2,
+        ];
 	}
 }

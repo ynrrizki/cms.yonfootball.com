@@ -11,6 +11,8 @@ class OrderBacklogWidget extends StatsOverviewWidget
 {
     protected int|string|array $columnSpan = 4;
 
+    protected ?string $heading = 'Prioritas Operasional';
+
     protected function getStats(): array
     {
         $backlogCount = Order::where('status', OrderStatus::PENDING)

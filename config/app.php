@@ -123,4 +123,13 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Deploy / DatabaseSeeder (production)
+    |--------------------------------------------------------------------------
+    */
+    'seed_admin_email' => env('SEED_ADMIN_EMAIL', 'super_admin@gmail.com'),
+
+    'seed_admin_password' => env('SEED_ADMIN_PASSWORD', 'password'),
+
 ];

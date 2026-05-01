@@ -4,15 +4,18 @@ namespace App\Filament\Widgets;
 
 use App\Enums\TransactionStatus;
 use App\Models\Transaction;
-use Filament\Widgets\ChartWidget;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class TransactionFunnelWidget extends ChartWidget
+class TransactionFunnelWidget extends StatsOverviewWidget
 {
-    protected ?string $heading = 'Status Transaksi (Hari Ini)';
+    protected ?string $heading = 'Funnel Transaksi Harian';
 
-    protected int|string|array $columnSpan = 6;
+    protected ?string $description = 'Breakdown status transaksi hari ini untuk identifikasi bottleneck funnel.';
 
-    protected function getData(): array
+    protected int|string|array $columnSpan = 4;
+
+    protected function getStats(): array
     {
         $pending = Transaction::where('status', TransactionStatus::PENDING)->whereDate('created_at', today())->count();
         $paid = Transaction::where('status', TransactionStatus::PAID)->whereDate('paid_at', today())->count();
@@ -20,43 +23,18 @@ class TransactionFunnelWidget extends ChartWidget
         $refunded = Transaction::where('status', TransactionStatus::REFUNDED)->whereDate('created_at', today())->count();
 
         return [
-            'datasets' => [
-                [
-                    'label' => 'Jumlah Transaksi',
-                    'data' => [$pending, $paid, $cancelled, $refunded],
-                    'backgroundColor' => [
-                        '#fbbf24', // warning
-                        '#10b981', // success
-                        '#ef4444', // danger
-                        '#94a3b8', // gray
-                    ],
-                ],
-            ],
-            'labels' => ['Pending', 'Paid', 'Cancelled', 'Refunded'],
-        ];
-    }
-
-    protected function getType(): string
-    {
-        return 'bar';
-    }
-
-    protected function getOptions(): array
-    {
-        return [
-            'plugins' => [
-                'legend' => [
-                    'display' => false,
-                ],
-            ],
-            'scales' => [
-                'y' => [
-                    'beginAtZero' => true,
-                    'ticks' => [
-                        'precision' => 0,
-                    ],
-                ],
-            ],
+            Stat::make('Pending', (string) $pending)
+                ->description('Menunggu pembayaran')
+                ->color('warning'),
+            Stat::make('Paid', (string) $paid)
+                ->description('Pembayaran terkonfirmasi')
+                ->color('success'),
+            Stat::make('Cancelled', (string) $cancelled)
+                ->description('Dibatalkan pelanggan/sistem')
+                ->color('danger'),
+            Stat::make('Refunded', (string) $refunded)
+                ->description('Dana dikembalikan')
+                ->color('gray'),
         ];
     }
 }

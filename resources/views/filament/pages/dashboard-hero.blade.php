@@ -49,7 +49,7 @@
             <div class="space-y-6">
                 <div class="space-y-3">
                     <span class="inline-flex items-center rounded-full border border-amber-400/20 bg-amber-400/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.35em] text-amber-300">
-                        Owner Overview
+                        Operational command center
                     </span>
                     <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-white md:text-5xl">
                         Dashboard yang langsung menjawab: <span class="text-amber-400">uang masuk</span>, <span class="text-emerald-400">order bergerak</span>, dan <span class="text-blue-400">risiko yang harus dibereskan</span>.
@@ -57,7 +57,7 @@
                 </div>
 
                 <p class="max-w-2xl text-base leading-7 text-slate-400">
-                    Ini bukan dashboard teknis. Ini ringkasan eksekutif untuk owner supaya tahu apa yang sudah menghasilkan, apa yang macet, dan apa yang harus diputuskan hari ini.
+                    Dashboard yang dibaca cepat, bukan dipelototin lama.
                 </p>
 
                 <div class="flex flex-wrap gap-3">
@@ -69,7 +69,7 @@
                         icon="heroicon-m-shopping-bag"
                         class="shadow-lg shadow-amber-500/20"
                     >
-                        Buka Order Pending ({{ $ordersPending }})
+                        Lihat antrean order ({{ $ordersPending }})
                     </x-filament::button>
 
                     <x-filament::button
@@ -80,7 +80,7 @@
                         outlined
                         icon="heroicon-m-arrow-trending-up"
                     >
-                        Review Transaksi ({{ $pendingTransactions }})
+                        Buka transaksi ({{ $pendingTransactions }})
                     </x-filament::button>
                 </div>
 

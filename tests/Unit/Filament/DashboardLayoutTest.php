@@ -5,23 +5,18 @@ use App\Filament\Pages\Dashboard;
 use App\Models\User;
 use Livewire\Livewire;
 
-it('contains a custom dashboard hierarchy in the dashboard page content', function (): void {
+it('keeps the dashboard page focused on filament native layout', function (): void {
     $dashboardSource = file_get_contents(app_path('Filament/Pages/Dashboard.php'));
-    $heroView = file_get_contents(resource_path('views/filament/pages/dashboard-hero.blade.php'));
 
-    expect($dashboardSource)->toContain("View::make('filament.pages.dashboard-hero')")
-        ->toContain('Ringkasan arus pendapatan')
-        ->toContain('Funnel transaksi harian')
-        ->toContain('Antrian kerja yang harus disentuh hari ini')
-        ->toContain('Aktivitas terbaru');
-
-    expect($heroView)->toContain('Operational command center')
-        ->toContain('Dashboard yang dibaca cepat, bukan dipelototin lama.')
-        ->toContain('Lihat antrean order')
-        ->toContain('Buka transaksi');
+    expect($dashboardSource)
+        ->not->toContain("View::make('filament.pages.dashboard-hero')")
+        ->toContain('RevenueStatsOverview::class')
+        ->toContain('RevenueLineChart::class')
+        ->toContain('PendingOrdersWidget::class')
+        ->toContain('LatestTransactionsWidget::class');
 });
 
-it('renders the custom dashboard hero for filaments users', function (): void {
+it('renders the filament dashboard widgets for panel users', function (): void {
     $user = User::factory()->create([
         'role' => Role::ADMIN,
     ]);
@@ -29,8 +24,5 @@ it('renders the custom dashboard hero for filaments users', function (): void {
     $this->actingAs($user);
 
     Livewire::test(Dashboard::class)
-        ->assertSee('Operational command center')
-        ->assertSee('Dashboard yang dibaca cepat, bukan dipelototin lama.')
-        ->assertSee('Lihat antrean order')
-        ->assertSee('Buka transaksi');
+        ->assertSee('Dashboard');
 });
